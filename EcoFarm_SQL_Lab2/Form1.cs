@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
 using System.Data.Odbc;
+using System.Data.SqlClient;
 using System.Drawing;
 using System.Linq;
 using System.Text;
@@ -13,7 +14,8 @@ namespace EcoFarm_SQL_Lab2
 {
     public partial class Form1 : Form
     {
-        OdbcConnection connection;
+        OdbcConnection connectionODBC;
+        SqlConnection connectionSQL;
         public Form1()
         {
             InitializeComponent();
@@ -29,19 +31,18 @@ namespace EcoFarm_SQL_Lab2
             var table = new DataTable();
             string command = "SELECT * FROM Invoice WHERE [Invoice type] = 2";
             string connectionString_ODBC = "Driver={SQL Server};server=DESKTOP-50OOFA6;trusted_connection=Yes;app=Microsoft® Visual Studio®;wsid=DESKTOP-50OOFA6;database=EcoFarm_DB;language=русский";
-            using (connection = new OdbcConnection(connectionString_ODBC))
+            using (connectionODBC = new OdbcConnection(connectionString_ODBC))
             {
-                if (connection.State == ConnectionState.Open)
-                    connection.Close();
+                if (connectionODBC.State == ConnectionState.Open)
+                    connectionODBC.Close();
 
-                connection.Open();
+                connectionODBC.Open();
 
                 try
                 {
-                    OdbcCommand selectCommand = new OdbcCommand(command, connection);
+                    OdbcCommand selectCommand = new OdbcCommand(command, connectionODBC);
                     table.Load(selectCommand.ExecuteReader());
                     dataGridView1.DataSource = table;
-                    MessageBox.Show("Should work");
                 }
                 catch(OdbcException ex)
                 {
@@ -49,7 +50,7 @@ namespace EcoFarm_SQL_Lab2
                 }
                 finally
                 {
-                    connection.Close();
+                    connectionODBC.Close();
                 }
             }
         }
@@ -59,18 +60,17 @@ namespace EcoFarm_SQL_Lab2
             var table = new DataTable();
             string command = "UPDATE Invoice SET[Invoice type] = 2 WHERE[Invoice type] = 1";
             string connectionString_ODBC = "Driver={SQL Server};server=DESKTOP-50OOFA6;trusted_connection=Yes;app=Microsoft® Visual Studio®;wsid=DESKTOP-50OOFA6;database=EcoFarm_DB;language=русский";
-            using (connection = new OdbcConnection(connectionString_ODBC))
+            using (connectionODBC = new OdbcConnection(connectionString_ODBC))
             {
-                if (connection.State == ConnectionState.Open)
-                    connection.Close();
+                if (connectionODBC.State == ConnectionState.Open)
+                    connectionODBC.Close();
 
-                connection.Open();
+                connectionODBC.Open();
 
                 try
                 {
-                    OdbcCommand updateCommand = new OdbcCommand(command, connection);
+                    OdbcCommand updateCommand = new OdbcCommand(command, connectionODBC);
                     var res = updateCommand.ExecuteNonQuery();
-                    MessageBox.Show("Should work");
                 }
                 catch (OdbcException ex)
                 {
@@ -78,7 +78,64 @@ namespace EcoFarm_SQL_Lab2
                 }
                 finally
                 {
-                    connection.Close();
+                    connectionODBC.Close();
+                }
+            }
+        }
+
+        private void button4_Click(object sender, EventArgs e)
+        {
+            var table = new DataTable();
+            string command = "SELECT * FROM [Invoice products] WHERE Units = 'kg'";
+            string connectionString = @"Data Source=DESKTOP-50OOFA6;Initial Catalog=EcoFarm_DB;Integrated Security=True";
+            using (connectionSQL = new SqlConnection(connectionString))
+            {
+                if (connectionSQL.State == ConnectionState.Open)
+                    connectionSQL.Close();
+
+                connectionSQL.Open();
+
+                try
+                {
+                    SqlCommand selectCommand = new SqlCommand(command, connectionSQL);
+                    table.Load(selectCommand.ExecuteReader());
+                    dataGridView1.DataSource = table;
+                }
+                catch (SqlException ex)
+                {
+                    MessageBox.Show(ex.Message + "sql error");
+                }
+                finally
+                {
+                    connectionSQL.Close();
+                }
+            }
+        }
+
+        private void button3_Click(object sender, EventArgs e)
+        {
+            var table = new DataTable();
+            string command = "UPDATE [Invoice products] SET [Invoice Number]=1 WHERE Name='Cocumbers'";
+            string connectionString = @"Data Source=DESKTOP-50OOFA6;Initial Catalog=EcoFarm_DB;Integrated Security=True";
+            using (connectionSQL = new SqlConnection(connectionString))
+            {
+                if (connectionSQL.State == ConnectionState.Open)
+                    connectionSQL.Close();
+
+                connectionSQL.Open();
+
+                try
+                {
+                    SqlCommand updateCommand = new SqlCommand(command, connectionSQL);
+                    var res = updateCommand.ExecuteNonQuery();
+                }
+                catch (SqlException ex)
+                {
+                    MessageBox.Show(ex.Message + "sql error");
+                }
+                finally
+                {
+                    connectionSQL.Close();
                 }
             }
         }
