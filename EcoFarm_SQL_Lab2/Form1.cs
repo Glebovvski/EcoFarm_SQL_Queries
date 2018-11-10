@@ -16,6 +16,10 @@ namespace EcoFarm_SQL_Lab2
     {
         OdbcConnection connectionODBC;
         SqlConnection connectionSQL;
+
+        string connesctionStringSQL = "Data Source=DESKTOP-50OOFA6;Initial Catalog=EcoFarm_DB;Integrated Security=True";
+        string connesctionStringODBC = "Driver={SQL Server};server=DESKTOP-50OOFA6;trusted_connection=Yes;app=Microsoft® Visual Studio®;wsid=DESKTOP-50OOFA6;database=EcoFarm_DB;language=русский";
+
         public Form1()
         {
             InitializeComponent();
@@ -30,8 +34,8 @@ namespace EcoFarm_SQL_Lab2
         {
             var table = new DataTable();
             string command = "SELECT * FROM Invoice WHERE [Invoice type] = 2";
-            string connectionString_ODBC = "Driver={SQL Server};server=DESKTOP-50OOFA6;trusted_connection=Yes;app=Microsoft® Visual Studio®;wsid=DESKTOP-50OOFA6;database=EcoFarm_DB;language=русский";
-            using (connectionODBC = new OdbcConnection(connectionString_ODBC))
+            //string connectionString_ODBC = "Driver={SQL Server};server=DESKTOP-50OOFA6;trusted_connection=Yes;app=Microsoft® Visual Studio®;wsid=DESKTOP-50OOFA6;database=EcoFarm_DB;language=русский";
+            using (connectionODBC = new OdbcConnection(connesctionStringODBC))
             {
                 if (connectionODBC.State == ConnectionState.Open)
                     connectionODBC.Close();
@@ -59,8 +63,8 @@ namespace EcoFarm_SQL_Lab2
         {
             var table = new DataTable();
             string command = "UPDATE Invoice SET[Invoice type] = 2 WHERE[Invoice type] = 1";
-            string connectionString_ODBC = "Driver={SQL Server};server=DESKTOP-50OOFA6;trusted_connection=Yes;app=Microsoft® Visual Studio®;wsid=DESKTOP-50OOFA6;database=EcoFarm_DB;language=русский";
-            using (connectionODBC = new OdbcConnection(connectionString_ODBC))
+            //string connectionString_ODBC = "Driver={SQL Server};server=DESKTOP-50OOFA6;trusted_connection=Yes;app=Microsoft® Visual Studio®;wsid=DESKTOP-50OOFA6;database=EcoFarm_DB;language=русский";
+            using (connectionODBC = new OdbcConnection(connesctionStringODBC))
             {
                 if (connectionODBC.State == ConnectionState.Open)
                     connectionODBC.Close();
@@ -87,8 +91,8 @@ namespace EcoFarm_SQL_Lab2
         {
             var table = new DataTable();
             string command = "SELECT * FROM [Invoice products] WHERE Units = 'kg'";
-            string connectionString = @"Data Source=DESKTOP-50OOFA6;Initial Catalog=EcoFarm_DB;Integrated Security=True";
-            using (connectionSQL = new SqlConnection(connectionString))
+            //string connectionString = @"Data Source=DESKTOP-50OOFA6;Initial Catalog=EcoFarm_DB;Integrated Security=True";
+            using (connectionSQL = new SqlConnection(connesctionStringSQL))
             {
                 if (connectionSQL.State == ConnectionState.Open)
                     connectionSQL.Close();
@@ -116,8 +120,8 @@ namespace EcoFarm_SQL_Lab2
         {
             var table = new DataTable();
             string command = "UPDATE [Invoice products] SET [Invoice Number]=1 WHERE Name='Cocumbers'";
-            string connectionString = @"Data Source=DESKTOP-50OOFA6;Initial Catalog=EcoFarm_DB;Integrated Security=True";
-            using (connectionSQL = new SqlConnection(connectionString))
+            //string connectionString = @"Data Source=DESKTOP-50OOFA6;Initial Catalog=EcoFarm_DB;Integrated Security=True";
+            using (connectionSQL = new SqlConnection(connesctionStringSQL))
             {
                 if (connectionSQL.State == ConnectionState.Open)
                     connectionSQL.Close();
@@ -138,6 +142,12 @@ namespace EcoFarm_SQL_Lab2
                     connectionSQL.Close();
                 }
             }
+        }
+
+        private void form2ToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            ParametrForm form = new ParametrForm();
+            form.Visible = true;
         }
     }
 }
