@@ -42,8 +42,8 @@ namespace EcoFarm_SQL_Lab2
                 parameter.Value = ParamTB.Text;
             }
 
-            string command = "SELECT * FROM ["+comboBox1.SelectedItem+"] WHERE [" + comboBox2.SelectedItem+"] = ?";
-            
+            string command = "SELECT * FROM [" + comboBox1.SelectedItem + "] WHERE [" + comboBox2.SelectedItem + "] = ?";
+
             //string connectionString_ODBC = "Driver={SQL Server};server=DESKTOP-50OOFA6;trusted_connection=Yes;app=Microsoft® Visual Studio®;wsid=DESKTOP-50OOFA6;database=EcoFarm_DB;language=русский";
             using (connectionODBC = new OdbcConnection(connesctionStringODBC))
             {
@@ -241,6 +241,129 @@ namespace EcoFarm_SQL_Lab2
                     connectionSQL.Close();
                 }
             }
+        }
+
+        private void button5_Click(object sender, EventArgs e)
+        {
+            var table = new DataTable();
+            OdbcParameter date;
+            OdbcParameter supCode;
+            OdbcParameter invoiceType;
+            OdbcParameter supplier;
+            OdbcParameter reciever;
+            try
+            {
+                date = new OdbcParameter();
+                date.Value = DateTime.Parse(DateTB.Text);
+                supCode = new OdbcParameter();
+                supCode.Value = int.Parse(SupCodeTB.Text);
+                invoiceType = new OdbcParameter();
+                invoiceType.Value = int.Parse(InvoiceTypeTB.Text);
+                supplier = new OdbcParameter();
+                supplier.Value = SupplierTB.Text;
+                reciever = new OdbcParameter();
+                reciever.Value = RecieverTB.Text;
+
+                string command = "INSERT INTO [Invoice]([Date], [Supplier code], [Invoice type], Supplier, Reciever) VALUES(?, ?, ?, ?, ?)";
+                //string connectionString_ODBC = "Driver={SQL Server};server=DESKTOP-50OOFA6;trusted_connection=Yes;app=Microsoft® Visual Studio®;wsid=DESKTOP-50OOFA6;database=EcoFarm_DB;language=русский";
+                using (connectionODBC = new OdbcConnection(connesctionStringODBC))
+                {
+                    if (connectionODBC.State == ConnectionState.Open)
+                        connectionODBC.Close();
+
+                    connectionODBC.Open();
+
+                    try
+                    {
+                        OdbcCommand insertCommand = new OdbcCommand(command, connectionODBC);
+                        insertCommand.Parameters.Add(date);
+                        insertCommand.Parameters.Add(supCode);
+                        insertCommand.Parameters.Add(invoiceType);
+                        insertCommand.Parameters.Add(supplier);
+                        insertCommand.Parameters.Add(reciever);
+                        int res =insertCommand.ExecuteNonQuery();
+                        MessageBox.Show("Insert successfully\n"+ res+" rows affected");
+                    }
+                    catch (OdbcException ex)
+                    {
+                        MessageBox.Show(ex.Message + " odbc error");
+                    }
+                    finally
+                    {
+                        connectionODBC.Close();
+                    }
+                }
+            }
+            catch
+            {
+                MessageBox.Show("Make sure data is correct");
+            }
+        }
+
+        private void button6_Click(object sender, EventArgs e)
+        {
+            var table = new DataTable();
+            SqlParameter name;
+            SqlParameter units;
+            SqlParameter numOfUnits;
+            SqlParameter unitPrice;
+            SqlParameter totalPrice;
+            SqlParameter invoiceNumber;
+            try
+            {
+                name = new SqlParameter("@Name", SqlDbType.VarChar);
+                name.Value = NameTB.Text;
+                units = new SqlParameter("@Units", SqlDbType.VarChar);
+                units.Value = UnitsTB.Text;
+                numOfUnits = new SqlParameter("@NumOfUnits", SqlDbType.Float);
+                numOfUnits.Value = float.Parse(NumOfUnitsTB.Text);
+                unitPrice = new SqlParameter("@UnitPrice", SqlDbType.Float);
+                unitPrice.Value = float.Parse(UnitPriceTB.Text);
+                totalPrice = new SqlParameter("@TotalPrice", SqlDbType.Float);
+                totalPrice.Value = float.Parse(TotalPriceTB.Text);
+                invoiceNumber = new SqlParameter("@InvoiceNum", SqlDbType.Int);
+                invoiceNumber.Value = int.Parse(InvNumberTB.Text);
+
+                string command = "INSERT INTO [Invoice products] VALUES(@Name, @Units, @NumOfUnits, @UnitPrice, @TotalPrice, @InvoiceNum)";
+                //string connectionString_ODBC = "Driver={SQL Server};server=DESKTOP-50OOFA6;trusted_connection=Yes;app=Microsoft® Visual Studio®;wsid=DESKTOP-50OOFA6;database=EcoFarm_DB;language=русский";
+                using (connectionSQL = new SqlConnection(connesctionStringSQL))
+                {
+                    if (connectionSQL.State == ConnectionState.Open)
+                        connectionSQL.Close();
+
+                    connectionSQL.Open();
+
+                    try
+                    {
+                        SqlCommand insertCommand = new SqlCommand(command, connectionSQL);
+                        insertCommand.Parameters.Add(name);
+                        insertCommand.Parameters.Add(units);
+                        insertCommand.Parameters.Add(numOfUnits);
+                        insertCommand.Parameters.Add(unitPrice);
+                        insertCommand.Parameters.Add(totalPrice);
+                        insertCommand.Parameters.Add(invoiceNumber);
+                        var res = insertCommand.ExecuteNonQuery();
+                        MessageBox.Show("Insert successfully\n" + res+" rows affected");
+                    }
+                    catch (SqlException ex)
+                    {
+                        MessageBox.Show(ex.Message + " sql error");
+                    }
+                    finally
+                    {
+                        connectionSQL.Close();
+                    }
+                }
+            }
+            catch
+            {
+                MessageBox.Show("Make sure data is correct");
+            }
+        }
+
+        private void groupBox2_Enter(object sender, EventArgs e)
+        {
+
         }
     }
 }
